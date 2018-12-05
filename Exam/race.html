@@ -18,31 +18,46 @@
            <div class="row">
                 <div class="offset-3 col-md-6">
                     <div class="form-group">
-                        <input type="text" name="nomCourse" class="form-control" placeholder="Nom de la course" value="" />
+                        <input type="text" id="nameRace" name="nomCourse" class="form-control" placeholder="Nom de la course" value="" />
                     </div>
                     <div class="form-group">
                         <div class="selectWrapper">
-                            <select name="pays" id="pays" class="form-control selectBox">
-                                <option value="0">Selectionner</option>
+                            <select name="pays" id="countryRace" class="form-control selectBox">
+                                <option value="0">Sélectionner</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="duree" class="form-control" placeholder="Durée de la course" value="" />
+                        <input type="text" name="duree" id="durationRace" class="form-control" placeholder="Durée de la course" value="" />
+                    </div>
+                    <div id="mainDiv">
+
                     </div>
                     <div class="form-group">
-                        <input type="submit" name="btnSubmit" class="btnContact" value="Commencer les inscriptions" />
+                        <input type="submit" name="beginInscription" class="btnContact" value="Commencer les inscriptions" id="beginInscription" onclick="inscription()" />
                     </div>
                 </div>
             </div>
-            <div class="row">
-
+            <!-- HIDDEN DIV -->
+            <div id="choiceAnimals" class="row" hidden>
+                <div class="offset-3 col-md-6">
+                    <div class="selectWrapper">
+                        <select name="chien" id="participants" class="form-control selectBox">
+                            <option value="0">Sélectionner un animal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="submit" value="Inscrire" class="btnContact">
+                        <input type="submit" value="Cloturer les inscription" class="btnContact">
+                    </div>
+                </div>
             </div>
         </form>
+
 </div>
 
 
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
 <script src="jquery.js"></script>
 <script src="race.js"></script>
 </body>
