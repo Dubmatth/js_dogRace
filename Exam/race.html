@@ -15,8 +15,12 @@
         </div>
         <form>
             <h3>Course d'animaux</h3>
+
            <div class="row">
                 <div class="offset-3 col-md-6">
+                    <div class="alert alert-danger" role="alert" hidden>
+                        <span id="alertMessage">Minimum 1 dog required</span>
+                    </div>
                     <div class="form-group">
                         <input type="text" id="nameRace" name="nomCourse" class="form-control" placeholder="Nom de la course" />
                     </div>
@@ -65,6 +69,46 @@
                     </thead>
                     <tbody id="tbodyPlayer">
                         <tr scope="row" id="rowPlayer">
+
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="row" id="raceTable">
+                <!-- <div>
+                    <button class="btn btn-primary">Start</button>
+                    <input type="time">
+                    <label for="timerRace">Temps restant</label>
+                    <input type="time" name="timerRace">
+                </div> -->
+                <div class="offset-3 col-md-6">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="button" class="input-group-text btn btn-primary" id="basic-addon1">Start</button>
+                        </div>
+                        <input type="time" class="form-control" aria-describedby="basic-addon1" min="00:00:00:000" max="23:59:59:999" value="00:00:00.000">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon2">Temps restant</span>
+                        </div>
+                        <input type="time" class="form-control" aria-describedby="basic-addon2" min="00:00:00:000" max="23:59:59:999" value="00:00:00.000">
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Suppression</th>
+                            <th scope="col">Identifiant</th>
+                            <th scope="col">Nom joueur</th>
+                            <th scope="col">Nationalité</th>
+                            <th scope="col">Commentaire</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPlayerRace">
+                        <tr scope="row" id="rowRacePlayer">
 
                         </tr>
                     </tbody>

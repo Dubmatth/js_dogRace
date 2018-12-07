@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function(){
 
     // ------ Const ------ //
+    const alertMessage = document.getElementById('alertMessage')
     const nameRace = document.getElementById('nameRace')
     const countryRace = document.getElementById('countryRace')
     const durationRace = document.getElementById('durationRace')
@@ -13,8 +14,12 @@ document.addEventListener('DOMContentLoaded', function(){
     const tbodyPlayer = document.getElementById('tbodyPlayer')
     const btnCloseInscription = document.getElementById('closeInscription')
     const participantsTable = document.getElementById('participantsTable')
+    const raceTable = document.getElementById('raceTable')
 
 
+    // --- Hide some elements --- //
+    participantsTable.hidden = true
+    raceTable.hidden = true
 
     // ------ We fill the countries ------ //
     beginInscription.disabled = true
@@ -49,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Check fill infos ------ //
-    let checkFill = setInterval(checkFillInscription, 1000)
+    let checkFill = setInterval(checkFillInscription, 500)
     function checkFillInscription() {
         const durationR =  parseInt(durationRace.value)
         if((nameRace.value !== '') && (durationR >= 1)) {
@@ -61,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function(){
     // ------ Inscription ------ //
     beginInscription.onclick = () => {
         inscription(event)
+        participantsTable.hidden = false
+
     }
     function inscription(event){
         event.preventDefault()
@@ -143,12 +150,29 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Close the inscription ------ //
-    btnCloseInscription.onclick = closeInscription
+    btnCloseInscription.onclick = () => {
+        if( allPlayers.length < 1){
+            alertMessage.parentElement.removeAttribute('hidden');
+        } else {
+            alertMessage.parentElement.setAttribute('hidden', 'hidden')
+            closeInscription()
+        }
+    }
     function closeInscription(){
-        // --- Hide the participant's table --- //
-        participantsTable.hide = true
+        // --- Hide the participant's table && btn close --- //
+        participantsTable.hidden = true
+        choiceAnimals.hidden = true
+        raceTable.hidden = false
     }
 
+    // ------ Chrono ------ //
+    const basicAddon1 = document.getElementById('basic-addon1')
+    basicAddon1.onclick = () => {
+        chrono()
+    }
+    function chrono(){
+        console.log('start')
+    }
 
 
 
