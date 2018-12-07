@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', function(){
     const mainDiv = document.getElementById('mainDiv')
     const choiceAnimals = document.getElementById('choiceAnimals')
     const participants = document.getElementById('participants')
+    const rowPlayer = document.getElementById('rowPlayer')
+    const tbodyPlayer = document.getElementById('tbodyPlayer')
+    const btnCloseInscription = document.getElementById('closeInscription')
+    const participantsTable = document.getElementById('participantsTable')
+
 
 
     // ------ We fill the countries ------ //
@@ -77,35 +82,44 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Add animals to inscription ------ //
-    const rowPlayer = document.getElementById('rowPlayer')
+    let toDisabled;
     let allPlayers = []
+    let btnSupIns
     participants.onchange = addToInscription
     function addToInscription(){
 
-        const tbodyPlayer = document.getElementById('tbodyPlayer')
+        // --- Find the correspond player --- //
         const currentPlayer = allDatasAnimals.find(currentPlayer => currentPlayer.idA === participants.value)
         allPlayers.push(currentPlayer)
-        const toDisabled = participants.selectedIndex
+
+        // --- Disabled animals already selected --- //
+        toDisabled = participants.selectedIndex
         participants.options[toDisabled].setAttribute('disabled', 'disabled')
 
         // --- Create tr & his elements --- //
         const clonedRowPlayer = rowPlayer.cloneNode()
-
         const tdBtn = document.createElement('td')
-        const tdBtnSupp = document.createElement('button')
-              tdBtnSupp.textContent = 'Supprimer'
-              tdBtnSupp.classList = 'btn btn-primary'
         const tdIdA = document.createElement('td')
         const tdNomA = document.createElement('td')
         const tdNatA = document.createElement('td')
         const tdDescA = document.createElement('td')
 
+        // --- Delete btn --- //
+        const tdBtnSupp = document.createElement('button')
+              tdBtnSupp.textContent = 'Supprimer'
+              tdBtnSupp.id = currentPlayer.idA
+              tdBtnSupp.value = toDisabled
+              tdBtnSupp.type = 'button'
+              tdBtnSupp.classList = 'btn btn-primary deleteFromInscription'
+
+        // --- Create tds elements --- //
         tdBtn.append(tdBtnSupp)
         tdIdA.append(currentPlayer.idA)
         tdNomA.append(currentPlayer.nomA)
         tdNatA.append(currentPlayer.nationA)
         tdDescA.append(currentPlayer.descA)
 
+        // --- Append every tds--- //
         clonedRowPlayer.append(tdBtn)
         clonedRowPlayer.append(tdIdA)
         clonedRowPlayer.append(tdNomA)
@@ -118,7 +132,21 @@ document.addEventListener('DOMContentLoaded', function(){
         // --- Change the default selected element --- //
         participants.options[0].setAttribute('selected', 'selected')
         participants.options[0].removeAttribute('selected', 'selected')
+        btnSupIns = document.getElementById(currentPlayer.idA)
+        btnSupIns.onclick = deleteFromInscription
+    }
 
+    // ------ Delete from inscription ------ //
+    function deleteFromInscription(){
+        this.parentElement.parentElement.remove()
+        participants.options[this.value].removeAttribute('disabled')
+    }
+
+    // ------ Close the inscription ------ //
+    btnCloseInscription.onclick = closeInscription
+    function closeInscription(){
+        // --- Hide the participant's table --- //
+        participantsTable.hide = true
     }
 
 
