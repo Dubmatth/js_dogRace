@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="duree" id="durationRace" class="form-control" placeholder="Durée de la course" value="" />
+                        <input type="text" name="duree" min="00:00:00:000" max="23:59:59:999" id="durationRace" class="form-control" placeholder="Durée de la course" value="" />
                     </div>
                     <div id="mainDiv">
 
@@ -42,7 +42,7 @@
             <div id="choiceAnimals" class="row" hidden>
                 <div class="offset-3 col-md-6">
                     <div class="selectWrapper">
-                        <select name="chien" id="participants" class="form-control selectBox">
+                        <select name="chien" id="participants" class="form-control selectBox custom-select" onchange="addToInscription()">
                             <option value="0">Sélectionner un animal</option>
                         </select>
                     </div>
@@ -52,13 +52,31 @@
                     </div>
                 </div>
             </div>
+            <div class="row" id="participantsTable">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Suppression</th>
+                            <th scope="col">Identifiant</th>
+                            <th scope="col">Nom joueur</th>
+                            <th scope="col">Nationalité</th>
+                            <th scope="col">Commentaire</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPlayer">
+                        <tr scope="row" id="rowPlayer">
+
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
         </form>
 
 </div>
 
 
 <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
-<script src="jquery.js"></script>
 <script src="race.js"></script>
 </body>
 </html>
