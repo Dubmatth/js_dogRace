@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const btnCloseInscription = document.getElementById('closeInscription')
     const participantsTable = document.getElementById('participantsTable')
     const raceTable = document.getElementById('raceTable')
-
+    const startTimer = document.getElementById('startTimer')
+    const rowRacePlayer = document.getElementById('rowRacePlayer')
 
     // --- Hide some elements --- //
     participantsTable.hidden = true
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function(){
     beginInscription.onclick = () => {
         inscription(event)
         participantsTable.hidden = false
+        countDown()
 
     }
     function inscription(event){
@@ -92,18 +94,19 @@ document.addEventListener('DOMContentLoaded', function(){
     let toDisabled;
     let allPlayers = []
     let btnSupIns
+    let currentPlayer
     participants.onchange = addToInscription
     function addToInscription(){
 
         // --- Find the correspond player --- //
-        const currentPlayer = allDatasAnimals.find(currentPlayer => currentPlayer.idA === participants.value)
+        currentPlayer = allDatasAnimals.find(currentPlayer => currentPlayer.idA === participants.value)
         allPlayers.push(currentPlayer)
 
         // --- Disabled animals already selected --- //
         toDisabled = participants.selectedIndex
         participants.options[toDisabled].setAttribute('disabled', 'disabled')
 
-        // --- Create tr & his elements --- //
+        // --- Create tr & td elements --- //
         const clonedRowPlayer = rowPlayer.cloneNode()
         const tdBtn = document.createElement('td')
         const tdIdA = document.createElement('td')
@@ -119,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function(){
               tdBtnSupp.type = 'button'
               tdBtnSupp.classList = 'btn btn-primary deleteFromInscription'
 
-        // --- Create tds elements --- //
+        // --- Fill tds elements --- //
         tdBtn.append(tdBtnSupp)
         tdIdA.append(currentPlayer.idA)
         tdNomA.append(currentPlayer.nomA)
@@ -160,21 +163,100 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     function closeInscription(){
         // --- Hide the participant's table && btn close --- //
-        participantsTable.hidden = true
         choiceAnimals.hidden = true
+        participantsTable.hidden = true
         raceTable.hidden = false
+        // ------ Fill Race table ------ //
+        for(player of allPlayers){
+            fillRaceTable()
+        }
     }
+
+    function fillRaceTable(){
+        // --- Create tr & td elements --- //
+        const clonedRowRacePlayer = rowRacePlayer.cloneNode()
+        const raceTdBtnStop = document.createElement('td')
+        const raceTdBtnLoose = document.createElement('td')
+        const raceTdIdA = document.createElement('td')
+        const raceTdNomA = document.createElement('td')
+        const raceTdNatA = document.createElement('td')
+        const raceTdDescA = document.createElement('td')
+
+        // --- stop & loose btn --- //
+        const raceBtnStop = document.createElement('button')
+            raceBtnStop.textContent = 'Stop'
+            raceBtnStop.type = 'button'
+            raceBtnStop.classList = 'btn btn-primary'
+        const raceBtnLoose = document.createElement('button')
+            raceBtnLoose.textContent = 'Abandon'
+            raceBtnLoose.type = 'button'
+            raceBtnLoose.classList = 'btn btn-primary'
+
+        // --- Fill tds elements --- //
+        raceTdBtnStop.append(raceBtnStop)
+        raceTdBtnLoose.append(raceBtnLoose)
+        raceTdIdA.append(player.idA)
+        raceTdNomA.append(player.nomA)
+        raceTdNatA.append(player.nationA)
+        raceTdDescA.append(player.descA)
+
+        // --- Append every tds--- //
+        clonedRowRacePlayer.append(raceTdBtnStop)
+        clonedRowRacePlayer.append(raceTdBtnLoose)
+        clonedRowRacePlayer.append(raceTdIdA)
+        clonedRowRacePlayer.append(raceTdNomA)
+        clonedRowRacePlayer.append(raceTdNatA)
+        clonedRowRacePlayer.append(raceTdDescA)
+
+        // --- Add the row at the table tbody --- //
+        tbodyPlayerRace.append(clonedRowRacePlayer)
+    }
+
+    function stopPlayerRace(){
+
+    }
+
+
+
+
+
 
     // ------ Chrono ------ //
     const basicAddon1 = document.getElementById('basic-addon1')
     basicAddon1.onclick = () => {
-        chrono()
+        let start = Date.now()
+        setInterval(function chrono(){
+            const diffStart = ((Date.now() - start))
+            startTimer.value = tps2String(diffStart)
+        }, 10)
+        basicAddon1.setAttribute('disabled', 'disabled')
     }
-    function chrono(){
-        console.log('start')
+
+    // ------ CountDown ------ //
+    function countDown(){
+        durRace = durationRace.value
+        console.log(durRace.split(':'))
+
     }
 
+    // ------ We transform to a valid display time ------ //
+    function tps2String(tps_ms){
+        let temps = new Date(tps_ms);
+        let heures = temps.getUTCHours();
+        let minutes = temps.getUTCMinutes();
+        let secondes = temps.getUTCSeconds();
+        let millisec = temps.getUTCMilliseconds();
+        if (secondes > 9){
+            if (minutes > 9){
+                if (heures > 9){
+                    return heures + ':' + minutes + ':' + secondes + '.' + millisec
+                }
+                return '0' + heures + ':' + minutes + ':' + secondes + '.' + millisec
+            }
+            return '0' + heures + ':0' + minutes + ':' + secondes + '.' + millisec
+        }
+        return '0' + heures + ':0' + minutes + ':0' + secondes + '.' + millisec
 
 
-
+    }
 })

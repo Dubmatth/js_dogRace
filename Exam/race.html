@@ -13,7 +13,7 @@
         <div class="contact-image">
             <img src="https://image.ibb.co/kUagtU/rocket_contact.png" alt="rocket_contact"/>
         </div>
-        <form>
+        <form method="post">
             <h3>Course d'animaux</h3>
 
            <div class="row">
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="duree" min="00:00:00:000" max="23:59:59:999" id="durationRace" class="form-control" placeholder="Durée de la course" value="" />
+                        <input type="time" name="duree" min="00:00:00.000" max="23:59:59:999" id="durationRace" class="form-control" placeholder="Durée de la course" />
                     </div>
                     <div id="mainDiv">
 
@@ -46,7 +46,7 @@
             <div id="choiceAnimals" class="row" hidden>
                 <div class="offset-3 col-md-6">
                     <div class="selectWrapper">
-                        <select name="chien" id="participants" class="form-control selectBox custom-select" onchange="addToInscription()">
+                        <select name="chien" id="participants" class="form-control selectBox custom-select">
                             <option value="0">Sélectionner un animal</option>
                         </select>
                     </div>
@@ -75,19 +75,13 @@
 
                 </table>
             </div>
-            <div class="row" id="raceTable">
-                <!-- <div>
-                    <button class="btn btn-primary">Start</button>
-                    <input type="time">
-                    <label for="timerRace">Temps restant</label>
-                    <input type="time" name="timerRace">
-                </div> -->
+            <div class="row mb-3" id="raceTable">
                 <div class="offset-3 col-md-6">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <button type="button" class="input-group-text btn btn-primary" id="basic-addon1">Start</button>
                         </div>
-                        <input type="time" class="form-control" aria-describedby="basic-addon1" min="00:00:00:000" max="23:59:59:999" value="00:00:00.000">
+                        <input type="time" id="startTimer" class="form-control" aria-describedby="basic-addon1" >
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -97,10 +91,11 @@
                     </div>
                 </div>
 
-                <table class="table">
+                <table class="table mt-3">
                     <thead>
                         <tr>
-                            <th scope="col">Suppression</th>
+                            <th scope="col">Stop</th>
+                            <th scope="col">Abandon</th>
                             <th scope="col">Identifiant</th>
                             <th scope="col">Nom joueur</th>
                             <th scope="col">Nationalité</th>
