@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const raceTable = document.getElementById('raceTable')
     const startTimer = document.getElementById('startTimer')
     const rowRacePlayer = document.getElementById('rowRacePlayer')
+    const remainingTimer = document.getElementById('remainingTimer')
 
     // --- Hide some elements --- //
     participantsTable.hidden = true
@@ -57,8 +58,10 @@ document.addEventListener('DOMContentLoaded', function(){
     // ------ Check fill infos ------ //
     let checkFill = setInterval(checkFillInscription, 500)
     function checkFillInscription() {
-        const durationR =  parseInt(durationRace.value)
-        if((nameRace.value !== '') && (durationR >= 1)) {
+        let heures = parseInt(durationRace.value.split(':')[0])
+        let minutes = parseInt(durationRace.value.split(':')[1])
+        let secondes = parseInt(durationRace.value.split(':')[2])
+        if((secondes >= 1) || (minutes >= 1) || (heures >= 1)) {
             clearInterval(checkFill)
             beginInscription.disabled = false
         }
@@ -68,8 +71,6 @@ document.addEventListener('DOMContentLoaded', function(){
     beginInscription.onclick = () => {
         inscription(event)
         participantsTable.hidden = false
-        countDown()
-
     }
     function inscription(event){
         event.preventDefault()
@@ -81,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // --- Create object with race's infos --- //
         infosRace.name = nameRace.value
-        infosRace.duration = '2000ms'
         infosRace.pays = countryRace.value
 
         // --- Fill & Call choiceAnimals --- //
@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function(){
     let currentPlayer
     participants.onchange = addToInscription
     function addToInscription(){
-
         // --- Find the correspond player --- //
         currentPlayer = allDatasAnimals.find(currentPlayer => currentPlayer.idA === participants.value)
         allPlayers.push(currentPlayer)
@@ -147,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Delete from inscription ------ //
+    // Ne supprime pas après avoir été enlevé
     function deleteFromInscription(){
         this.parentElement.parentElement.remove()
         participants.options[this.value].removeAttribute('disabled')
@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function(){
         choiceAnimals.hidden = true
         participantsTable.hidden = true
         raceTable.hidden = false
+        remainingTimer.value = durationRace.value
         // ------ Fill Race table ------ //
         for(player of allPlayers){
             fillRaceTable()
@@ -221,34 +222,70 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
-    // ------ Chrono ------ //
+    // ------ Timer ------ //
     const basicAddon1 = document.getElementById('basic-addon1')
     basicAddon1.onclick = () => {
+        // --- Chrono --- //
         let start = Date.now()
+        let diffStart
         setInterval(function chrono(){
-            const diffStart = ((Date.now() - start))
-            startTimer.value = tps2String(diffStart)
+            diffStart = ((Date.now() - start))
+            startTimer.value = msToTime(diffStart)
         }, 10)
         basicAddon1.setAttribute('disabled', 'disabled')
+
+
+
+        // FIXME ClearInterval()
+        let start2
+        setInterval(function CountDown(){
+            // --- CountDown --- //
+            let heures = parseInt((durationRace.value).split(':')[0] * 3600000)
+            let minutes = parseInt((durationRace.value).split(':')[1] * 60000)
+            if ((durationRace.value).split(':')[2]) {
+                secondes = parseInt((durationRace.value).split(':')[2] * 1000)
+            } else {
+                secondes = 0
+            }
+            let timeMs = heures+minutes+secondes
+
+
+            diffStart = (parseInt(start) - parseInt((Date.now())))
+            let diff = parseInt(timeMs) + diffStart
+            remainingTimer.value = msToTime(diff)
+            console.log(diff)
+            if (diff <= 0){
+                clearInterval()
+                console.log('Stoppp')
+            }
+
+        }, 10)
     }
 
-    // ------ CountDown ------ //
-    function countDown(){
-        durRace = durationRace.value
-        console.log(durRace.split(':'))
 
-    }
+
 
     // ------ We transform to a valid display time ------ //
-    function tps2String(tps_ms){
+    function msToTime(duration) {
+        let milliseconds = parseInt((duration % 1000) / 100),
+            seconds = parseInt((duration / 1000) % 60),
+            minutes = parseInt((duration / (1000 * 60)) % 60),
+            hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+        return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+      }
+    /* function tps2String(tps_ms){
         let temps = new Date(tps_ms);
         let heures = temps.getUTCHours();
         let minutes = temps.getUTCMinutes();
         let secondes = temps.getUTCSeconds();
         let millisec = temps.getUTCMilliseconds();
-        if (secondes > 9){
-            if (minutes > 9){
-                if (heures > 9){
+        if (secondes >= 10 && minutes < 10 && heures < 10){
+            if (minutes >= 10 && secondes >= 10 && heures < 10){
+                if (heures >= 10 && minutes >= 10 && secondes >= 10){
                     return heures + ':' + minutes + ':' + secondes + '.' + millisec
                 }
                 return '0' + heures + ':' + minutes + ':' + secondes + '.' + millisec
@@ -256,7 +293,14 @@ document.addEventListener('DOMContentLoaded', function(){
             return '0' + heures + ':0' + minutes + ':' + secondes + '.' + millisec
         }
         return '0' + heures + ':0' + minutes + ':0' + secondes + '.' + millisec
-
+    } */
+    function tps2String2(tps_ms){
+        let temps = new Date(tps_ms);
+        let heures = temps.getUTCHours();
+        let minutes = temps.getUTCMinutes();
+        let secondes = temps.getUTCSeconds();
+        let millisec = temps.getUTCMilliseconds();
+        return heures + ':' + minutes + ':' + secondes + '.' + millisec
 
     }
 })
