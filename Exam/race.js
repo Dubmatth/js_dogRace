@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const startTimer = document.getElementById('startTimer')
     const rowRacePlayer = document.getElementById('rowRacePlayer')
     const remainingTimer = document.getElementById('remainingTimer')
+    const btnStopRace = document.getElementsByClassName('stopRace')
+    const btnLooseRace = document.getElementsByClassName('looseRace')
 
     // --- Hide some elements --- //
     participantsTable.hidden = true
@@ -91,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Add animals to inscription ------ //
-    let toDisabled;
+    let toDisabled
     let allPlayers = []
     let btnSupIns
     let currentPlayer
@@ -146,9 +148,16 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ Delete from inscription ------ //
-    // Ne supprime pas après avoir été enlevé
     function deleteFromInscription(){
+        // --- Delete from table --- //
         this.parentElement.parentElement.remove()
+        // --- Delete from allPlayers --- //
+        for(player of allPlayers){
+            const indexPlayer = allPlayers.indexOf(player)
+            if(this.id == player.idA){
+                allPlayers.splice(indexPlayer, 1)
+            }
+        }
         participants.options[this.value].removeAttribute('disabled')
     }
 
@@ -187,11 +196,13 @@ document.addEventListener('DOMContentLoaded', function(){
         const raceBtnStop = document.createElement('button')
             raceBtnStop.textContent = 'Stop'
             raceBtnStop.type = 'button'
-            raceBtnStop.classList = 'btn btn-primary'
+            raceBtnStop.value = player.idA
+            raceBtnStop.classList = `btn btn-primary stopRace`
         const raceBtnLoose = document.createElement('button')
             raceBtnLoose.textContent = 'Abandon'
             raceBtnLoose.type = 'button'
-            raceBtnLoose.classList = 'btn btn-primary'
+            raceBtnLoose.value = player.idA
+            raceBtnLoose.classList = `btn btn-primary looseRace`
 
         // --- Fill tds elements --- //
         raceTdBtnStop.append(raceBtnStop)
@@ -213,53 +224,75 @@ document.addEventListener('DOMContentLoaded', function(){
         tbodyPlayerRace.append(clonedRowRacePlayer)
     }
 
-    function stopPlayerRace(){
-
-    }
-
-
-
-
-
-
     // ------ Timer ------ //
     const basicAddon1 = document.getElementById('basic-addon1')
     basicAddon1.onclick = () => {
         // --- Chrono --- //
         let start = Date.now()
         let diffStart
-        setInterval(function chrono(){
+        const myChrono = setInterval(chrono, 10)
+        function chrono(){
             diffStart = ((Date.now() - start))
             startTimer.value = msToTime(diffStart)
-        }, 10)
+        }
         basicAddon1.setAttribute('disabled', 'disabled')
 
-
-
-        // FIXME ClearInterval()
-        let start2
-        setInterval(function CountDown(){
-            // --- CountDown --- //
-            let heures = parseInt((durationRace.value).split(':')[0] * 3600000)
-            let minutes = parseInt((durationRace.value).split(':')[1] * 60000)
+        // --- CountDown --- //
+        const myCountDown = setInterval(countDown, 10)
+        function countDown(){
+            let heures = parseInt((durationRace.value).split(':')[0] * 3600000) // to ms
+            let minutes = parseInt((durationRace.value).split(':')[1] * 60000) // to ms
             if ((durationRace.value).split(':')[2]) {
-                secondes = parseInt((durationRace.value).split(':')[2] * 1000)
+                secondes = parseInt((durationRace.value).split(':')[2] * 1000) // to ms
             } else {
                 secondes = 0
             }
             let timeMs = heures+minutes+secondes
-
-
             diffStart = (parseInt(start) - parseInt((Date.now())))
             let diff = parseInt(timeMs) + diffStart
             remainingTimer.value = msToTime(diff)
-            console.log(diff)
             if (diff <= 0){
-                clearInterval()
-                console.log('Stoppp')
+                clearInterval(myChrono)
+                clearInterval(myCountDown)
+
+                // --- Manage the race buttons --- //
+                for(btn of btnStopRace){
+                    if (btn.textContent == 'Stop'){
+                        //--- Didn't end the race ---//
+                        // ----------------- Must to change his status
+                        btn.textContent = startTimer.value
+                        btn.setAttribute('disabled', 'disabled')
+                    }
+                }
+                for(btn of btnLooseRace){
+                    btn.textContent = 'Course finie'
+                    btn.setAttribute('disabled', 'disabled')
+                }
+
+                // --- Send all value --- //
+                console.log(allPlayers)
+
+                // --- Reset the timers --- //
+                startTimer.value = '00:00:00.000'
+                remainingTimer.value = '00:00:00:000'
             }
 
-        }, 10)
+            // --- Loop for check click event on all buttons --- //
+            for(let btn of btnStopRace){
+                btn.onclick = stopRacePlayer
+            }
+            // ------- Stop the player's race ------ //
+            function stopRacePlayer(){
+                for(player of allPlayers){
+                    if (player.idA == this.value){
+                        this.textContent = startTimer.value
+                        this.disabled = true
+                        this.parentElement.nextSibling.disabled = true
+                        this.parentElement.nextSibling.childNodes[0].textContent = "Course finie"
+                    }
+                }
+            }
+        }
     }
 
 
@@ -277,30 +310,4 @@ document.addEventListener('DOMContentLoaded', function(){
         seconds = (seconds < 10) ? "0" + seconds : seconds;
         return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
       }
-    /* function tps2String(tps_ms){
-        let temps = new Date(tps_ms);
-        let heures = temps.getUTCHours();
-        let minutes = temps.getUTCMinutes();
-        let secondes = temps.getUTCSeconds();
-        let millisec = temps.getUTCMilliseconds();
-        if (secondes >= 10 && minutes < 10 && heures < 10){
-            if (minutes >= 10 && secondes >= 10 && heures < 10){
-                if (heures >= 10 && minutes >= 10 && secondes >= 10){
-                    return heures + ':' + minutes + ':' + secondes + '.' + millisec
-                }
-                return '0' + heures + ':' + minutes + ':' + secondes + '.' + millisec
-            }
-            return '0' + heures + ':0' + minutes + ':' + secondes + '.' + millisec
-        }
-        return '0' + heures + ':0' + minutes + ':0' + secondes + '.' + millisec
-    } */
-    function tps2String2(tps_ms){
-        let temps = new Date(tps_ms);
-        let heures = temps.getUTCHours();
-        let minutes = temps.getUTCMinutes();
-        let secondes = temps.getUTCSeconds();
-        let millisec = temps.getUTCMilliseconds();
-        return heures + ':' + minutes + ':' + secondes + '.' + millisec
-
-    }
 })
