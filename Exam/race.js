@@ -84,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function(){
         durationRace.disabled = true
         beginInscription.remove()
 
-        // --- Create object with race's infos --- //
-        infosRace.name = nameRace.value
-        infosRace.pays = countryRace.value
-
         // --- Fill & Call choiceAnimals --- //
         selectAnimals()
         durationRace.after = choiceAnimals
@@ -301,11 +297,12 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
+    // ------ We send the race ------ //
     function sendRace(){
         // --- Data's Race --- //
         let date = new Date()
         /* const idC = auto increment */
-        const nomC = infosRace.name = nameRace.value
+        const nomC = nameRace.value
         /* const descC = */
         const dateC = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
         const lieuC = dataCountryRace[countryRace.selectedIndex - 1].codeP
@@ -324,6 +321,28 @@ document.addEventListener('DOMContentLoaded', function(){
         .then(res=>res.json())
         .then(res => console.log(res))
     }
+
+
+
+    // ------ Comment savoir l'id de la course sans requête si on vient de la créée et que l'id à été inséré automatique par la db ------ //
+    /* function sendResult(){
+        const data = {
+            idC: ,
+            idA: ,
+            temps: ,
+            statut:
+
+        }
+        fetch('./rqInsertResultat.php', {
+            method: 'post',
+            headers: new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }),
+            body: 'resultat='+JSON.stringify(data)
+        })
+        .then(res=>res.json())
+        .then(res => console.log(res))
+    } */
 
 
 
