@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const durationRace = document.getElementById('durationRace')
     const beginInscription = document.getElementById('beginInscription')
     const infosRace = {}
-    const mainDiv = document.getElementById('mainDiv')
     const choiceAnimals = document.getElementById('choiceAnimals')
     const participants = document.getElementById('participants')
     const rowPlayer = document.getElementById('rowPlayer')
@@ -28,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // ------ We fill the countries ------ //
     beginInscription.disabled = true
     country()
+    let dataCountryRace
     function country(){
         fetch('./rqListePays.php')
             .then(res => res.json())
@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function(){
                     option.append(data.nomP)
                     countryRace.append(option)
                 }
+                //--- Keep all race datas ---//
+                dataCountryRace = datas
             })
     }
 
@@ -270,7 +272,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
 
                 // --- Send all value --- //
-                console.log(allPlayers)
+                /* for (player of allPlayers){
+                    console.log(player.idA)
+                }
+                console.log(allPlayers) */
+                sendRace()
 
                 // --- Reset the timers --- //
                 startTimer.value = '00:00:00.000'
@@ -295,6 +301,29 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
+    function sendRace(){
+        // --- Data's Race --- //
+        let date = new Date()
+        /* const idC = auto increment */
+        const nomC = infosRace.name = nameRace.value
+        /* const descC = */
+        const dateC = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+        const lieuC = dataCountryRace[countryRace.selectedIndex - 1].codeP
+        let data = {
+            nomC: nomC,
+            dateC: dateC,
+            lieuC: lieuC
+        }
+        fetch('./rqInsertCourse.php', {
+            method: 'post',
+            headers: new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }),
+            body: 'course='+JSON.stringify(data)
+        })
+        .then(res=>res.json())
+        .then(res => console.log(res))
+    }
 
 
 
