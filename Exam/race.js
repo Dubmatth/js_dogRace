@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const countryRace = document.getElementById('countryRace')
     const durationRace = document.getElementById('durationRace')
     const beginInscription = document.getElementById('beginInscription')
-    const infosRace = {}
     const choiceAnimals = document.getElementById('choiceAnimals')
     const participants = document.getElementById('participants')
     const rowPlayer = document.getElementById('rowPlayer')
@@ -173,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function(){
         choiceAnimals.hidden = true
         participantsTable.hidden = true
         raceTable.hidden = false
+        remainingTimer.disabled = true
         remainingTimer.value = durationRace.value
         // ------ Fill Race table ------ //
         for(player of allPlayers){
@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // ------ Timer ------ //
     const basicAddon1 = document.getElementById('basic-addon1')
+    let playerTime
     basicAddon1.onclick = () => {
         // --- Chrono --- //
         let start = Date.now()
@@ -250,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function(){
             let diff = parseInt(timeMs) + diffStart
             remainingTimer.value = msToTime(diff)
             if (diff <= 0){
+                sendRace()
                 clearInterval(myChrono)
                 clearInterval(myCountDown)
 
@@ -263,25 +265,28 @@ document.addEventListener('DOMContentLoaded', function(){
                     }
                 }
                 for(btn of btnLooseRace){
-                    btn.textContent = 'Course finie'
+                    btn.classList.contains('abandon') ? btn.textContent = 'Abandon' : btn.textContent = 'Course finie'
                     btn.setAttribute('disabled', 'disabled')
                 }
-
-                // --- Send all value --- //
-                /* for (player of allPlayers){
-                    console.log(player.idA)
-                }
-                console.log(allPlayers) */
-                sendRace()
-
                 // --- Reset the timers --- //
                 startTimer.value = '00:00:00.000'
                 remainingTimer.value = '00:00:00:000'
+            }
+            // --- Loop for check click event on all buttons --- //
+            for(btn of btnLooseRace){
+                btn.onclick = looseRacePlayer
+            }
+            // ------ Loose race ------ //
+            function looseRacePlayer(){
+                this.classList.add('abandon')
+                this.textContent = 'Abandon'
+                this.setAttribute('disabled', 'disabled')
             }
 
             // --- Loop for check click event on all buttons --- //
             for(let btn of btnStopRace){
                 btn.onclick = stopRacePlayer
+
             }
             // ------- Stop the player's race ------ //
             function stopRacePlayer(){
@@ -291,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function(){
                         this.disabled = true
                         this.parentElement.nextSibling.disabled = true
                         this.parentElement.nextSibling.childNodes[0].textContent = "Course finie"
+
                     }
                 }
             }
@@ -298,6 +304,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     // ------ We send the race ------ //
+    let insertIdc
     function sendRace(){
         // --- Data's Race --- //
         let date = new Date()
@@ -319,30 +326,35 @@ document.addEventListener('DOMContentLoaded', function(){
             body: 'course='+JSON.stringify(data)
         })
         .then(res=>res.json())
-        .then(res => console.log(res))
+        .then(res => {
+            insertIdc = res
+            for(player of allPlayers){
+                sendResult()
+            }
+        })
     }
 
-
-
-    // ------ Comment savoir l'id de la course sans requête si on vient de la créée et que l'id à été inséré automatique par la db ------ //
-    /* function sendResult(){
-        const data = {
-            idC: ,
-            idA: ,
-            temps: ,
-            statut:
-
+    let data = {}
+    let statut = ''
+    function sendResult(){
+        for (btn of btnStopRace){
+            playerTime = btn.textContent
+            btn.classList.contains('abandon') ? statut = 'A' : statut = 'T'
+            data = {
+                idC: insertIdc,
+                idA: player.idA,
+                temps: playerTime,
+                statut: statut
+            }
+            fetch('./rqInsertResultat.php', {
+                method: 'post',
+                headers: new Headers({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }),
+                body: 'resultat='+JSON.stringify(data)
+            })
         }
-        fetch('./rqInsertResultat.php', {
-            method: 'post',
-            headers: new Headers({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            }),
-            body: 'resultat='+JSON.stringify(data)
-        })
-        .then(res=>res.json())
-        .then(res => console.log(res))
-    } */
+    }
 
 
 
