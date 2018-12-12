@@ -243,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function(){
             startTimer.value = msToTime(diffStart)
         }
         basicAddon1.setAttribute('disabled', 'disabled')
-
         // --- CountDown --- //
         const myCountDown = setInterval(countDown, 10)
         function countDown(){
