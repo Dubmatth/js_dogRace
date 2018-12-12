@@ -363,8 +363,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
-
-
     // ------ We transform to a valid display time ------ //
     function msToTime(duration) {
         let milliseconds = parseInt((duration % 1000) / 100),
