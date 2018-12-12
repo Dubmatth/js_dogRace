@@ -190,17 +190,18 @@ document.addEventListener('DOMContentLoaded', function(){
         const raceTdNatA = document.createElement('td')
         const raceTdDescA = document.createElement('td')
 
-        // --- stop & loose btn --- //
+        // --- stop btn --- //
         const raceBtnStop = document.createElement('button')
-            raceBtnStop.textContent = 'Stop'
-            raceBtnStop.type = 'button'
-            raceBtnStop.value = player.idA
-            raceBtnStop.classList = `btn btn-primary stopRace`
+        raceBtnStop.textContent = 'Stop'
+        raceBtnStop.type = 'button'
+        raceBtnStop.value = player.idA
+        raceBtnStop.classList = `btn btn-primary stopRace disabled`
+        // --- Loose btn --- //
         const raceBtnLoose = document.createElement('button')
-            raceBtnLoose.textContent = 'Abandon'
-            raceBtnLoose.type = 'button'
-            raceBtnLoose.value = player.idA
-            raceBtnLoose.classList = `btn btn-primary looseRace`
+        raceBtnLoose.textContent = 'Abandon'
+        raceBtnLoose.type = 'button'
+        raceBtnLoose.value = player.idA
+        raceBtnLoose.classList = `btn btn-primary looseRace disabled`
 
         // --- Fill tds elements --- //
         raceTdBtnStop.append(raceBtnStop)
@@ -226,6 +227,13 @@ document.addEventListener('DOMContentLoaded', function(){
     const basicAddon1 = document.getElementById('basic-addon1')
     let playerTime
     basicAddon1.onclick = () => {
+        // --- Remove class Disabled --- //
+        for(btn of btnStopRace){
+            btn.classList.remove('disabled')
+        }
+        for(btn of btnLooseRace){
+            btn.classList.remove('disabled')
+        }
         // --- Chrono --- //
         let start = Date.now()
         let diffStart
